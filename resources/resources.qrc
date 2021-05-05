@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>rakcloud_icon.png</file>
+        <file>rakcloud_logo.png</file>
+    </qresource>
+</RCC>

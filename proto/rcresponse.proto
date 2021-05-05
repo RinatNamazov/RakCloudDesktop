@@ -1,0 +1,112 @@
+/*****************************************************************************
+ *
+ *  PROJECT:        RakCloud
+ *  LICENSE:        See LICENSE in the top level directory
+ *  FILE:           proto/rcresponse.proto
+ *  DESCRIPTION:    Proto for client WebSocket responses.
+ *  COPYRIGHT:      (c) 2021 RINWARES <rinwares.com>
+ *  AUTHOR:         Rinat Namazov <rinat.namazov@rinwares.com>
+ *
+ *****************************************************************************/
+
+syntax = "proto3";
+package rcresponse;
+
+import "proto/rcmisc.proto";
+
+message ErrorMessage {
+    int32 code = 1;
+    string description = 2;
+}
+
+message LogProto {
+    string text = 1;
+    uint32 bot_id = 2;
+}
+
+message ScriptsListProto {
+    repeated string manager_scripts = 1;
+    repeated string bot_scripts = 2;
+}
+
+message ResponseSystemInfoProto {
+    string version = 1;
+    int64 uptime = 2;
+    uint32 total_bots = 3;
+    uint32 running_bots = 4;
+}
+
+message CommandMessage {
+    enum CmdType {
+        CMD_TYPE_EXIT = 0;
+        CMD_TYPE_TEST = 1;
+    }
+    CmdType cmd_type = 1;
+}
+
+message BotEventProto {
+    enum EventType {
+        EVENT_TYPE_CREATED = 0;
+        EVENT_TYPE_STARTED = 1;
+        EVENT_TYPE_STOPED = 2;
+        EVENT_TYPE_REMOVED = 3;
+    }
+    EventType event_type = 1;
+    uint32 bot_id = 2;
+    string bot_name = 3;
+}
+
+message SampServerInfoProto {
+    string address = 1;
+    string hostname = 2;
+    int32 player_count = 3;
+    int32 max_players = 4;
+    string mod = 5;
+    string language = 6;
+}
+
+message LocalPlayerProto {
+    string nickname = 1;
+    int32 id = 2;
+    float health = 3;
+    float armour = 4;
+    rcmisc.Vector3 position = 5;
+    int32 ping = 6;
+    int32 score = 7;
+    int32 money = 8;
+    int32 wanted_level = 9;
+    int32 skin = 10;
+    int32 color = 11;
+    int32 team = 12;
+    bool is_spawned = 13;
+}
+
+message BotInfoProto {
+    uint32 bot_id = 1;
+    int64 uptime = 2;
+    bool included_samp = 3;
+    LocalPlayerProto local_player = 4;
+    SampServerInfoProto samp_server = 5;
+}
+
+message BotListProto {
+    message BotNameAndId {
+        uint32 id = 1;
+        string name = 2;
+        bool started = 3;
+    }
+    repeated BotNameAndId bots = 1;
+}
+
+message ResponseMessageWrapper {
+    oneof msg {
+        ErrorMessage error = 1;
+        CommandMessage cmd = 2;
+        BotListProto bot_list = 4;
+        BotEventProto bot_event = 3;
+        BotInfoProto bot_info = 5;
+        ResponseSystemInfoProto system_info = 6;
+        LogProto log = 7;
+        ScriptsListProto scripts_list = 8;
+    }
+}

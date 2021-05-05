@@ -1,0 +1,108 @@
+/*****************************************************************************
+ *
+ *  PROJECT:        RakCloud
+ *  LICENSE:        See LICENSE in the top level directory
+ *  FILE:           proto/rcrequest.proto
+ *  DESCRIPTION:    Proto for client WebSocket requests.
+ *  COPYRIGHT:      (c) 2021 RINWARES <rinwares.com>
+ *  AUTHOR:         Rinat Namazov <rinat.namazov@rinwares.com>
+ *
+ *****************************************************************************/
+
+syntax = "proto3";
+package rcrequest;
+
+message RequestBotListProto {
+    bool full = 1;
+}
+
+message RequestBotInfoProto {
+    repeated uint32 ids = 1 [packed = true];
+    bool samp_info = 2;
+}
+
+message RequestSystemInfoProto {}
+
+message RequestScriptsListProto {
+    bool manager = 1;
+    bool bot = 2;
+}
+
+message ReloadScriptsProto {
+    uint32 bot_id = 1;
+}
+
+message SubscribeProto {
+    enum SubscribeType {
+        NONE_TYPE = 0;
+        SUBSCRIBE = 1;
+        UNSUBSCRIBE = 2;
+        UNSUBSCRIBE_ALL = 3;
+    }
+    enum SubscribeTopic {
+        NONE_TOPIC = 0;
+        MANAGER_LOGS = 1;
+        BOT_LOGS = 2;
+        BOT_INFO = 3;
+        BOT_EVENTS = 4;
+    }
+    SubscribeType type = 1;
+    repeated SubscribeTopic topics = 2 [packed = true];
+}
+
+message ControlManagerProto {
+    enum ManagerControlType {
+        NONE = 0;
+        RESTART = 2;
+    }
+    ManagerControlType control_type = 1;
+}
+
+message ControlBotProto {
+    enum ControlType {
+        NONE = 0;
+        ENABLE = 1;
+        DISABLE = 2;
+        RESTART = 3;
+        REMOVE = 4;
+        ADD = 5;
+    }
+    uint32 bot_id = 1;
+    ControlType control_type = 2;
+}
+
+message ControlScriptsListProto {
+    enum ControlScriptsType {
+        NONE = 0;
+        UPLOAD_SCRIPT = 1;
+        DELETE_SCRIPT = 2;
+    }
+    ControlScriptsType control_type = 1;
+    int32 script_id = 2;
+    bytes file = 3;
+}
+
+message ManagerCommandProto {
+    string command = 1;
+}
+
+message BotCommandProto {
+    uint32 bot_id = 1;
+    string command = 2;
+}
+
+message RequestMessageWrapper {
+    oneof msg {
+        RequestBotListProto request_bot_list = 1;
+        RequestBotInfoProto request_bot_info = 2;
+        RequestSystemInfoProto request_system_info = 3;
+        ManagerCommandProto manager_command = 4;
+        ControlManagerProto control_manager = 5;
+        ControlBotProto control_bot = 6;
+        BotCommandProto bot_command = 7;
+        ControlScriptsListProto control_scripts_list = 8;
+        SubscribeProto subscribe = 9;
+        RequestScriptsListProto request_scripts_list = 10;
+        ReloadScriptsProto reload_scripts = 11;
+    }
+}
